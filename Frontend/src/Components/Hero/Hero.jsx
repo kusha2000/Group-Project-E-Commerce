@@ -2,7 +2,7 @@ import React from "react";
 import "./Hero.css";
 import hero from "../Assets/hero_image.png";
 import arrow_icon from "../Assets/arrow.png";
-import hand_icon from "../Assets/hand_icon.png";
+
 
 const Hero = () => {
   return (

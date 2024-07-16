@@ -3,6 +3,7 @@
 .item {
     width: 300px;
     text-align: left; /* Center the content within the item */
+    margin-bottom: 150px;
   }
 
 .item p{
