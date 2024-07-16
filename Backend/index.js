@@ -44,6 +44,7 @@ app.post("/upload",upload.single("product"),(req,res)=>{
   })
 })
 
+//Product Schema
 const Product =mongoose.model("Product",{
   id:{
     type:Number,
@@ -126,6 +127,30 @@ app.get('/allproduct',async (req,res)=>{
 
   res.send(product)
 })
+
+
+//User Schema
+const Users=mongoose.model('Users',{
+  name:{
+    type:String
+  },
+  email:{
+    type:String,
+    unique:true,
+  },
+  password:{
+    type:String,
+  },
+  cartData:{
+    type:Object,
+  },
+  date:{
+    type:Date,
+    default:Date.now(),
+  }
+})
+
+
 
 
 app.listen(PORT, (error) => {
