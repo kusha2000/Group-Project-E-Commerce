@@ -1,4 +1,4 @@
-const PORT = 4000 || process.env.PORT;
+const PORT = process.env.PORT || 4000;
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
@@ -6,18 +6,21 @@ const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const path = require("path");
 const cors = require("cors");
+const connectDB = require("./db");
 require("dotenv").config();
 
 app.use(express.json());
 app.use(cors());
 
-const uri = process.env.MONGODB_URI || "";
-try {
-  mongoose.connect(uri);
-  // console.log("Connected to DB");
-} catch (error) {
-  console.log(error);
-}
+connectDB();
+
+// const uri = process.env.MONGODB_URI || "";
+// try {
+//   mongoose.connect(uri);
+//   // console.log("Connected to DB");
+// } catch (error) {
+//   console.log(error);
+// }
 
 app.get("/", (req, res) => {
   res.send("Express App is Running");
@@ -106,7 +109,7 @@ app.post('/addproduct',async (req,res)=>{
   });
   console.log(product);
   await product.save();
-  console.log("Saved");
+  console.log("New Product Added");
   res.json({
     success:true,
     name:req.body.name,
@@ -182,6 +185,7 @@ app.post('/signup',async (req,res)=>{
 
   const token=jwt.sign(data,'secret_ecom');
   res.json({success:true,token})
+  console.log("New User Created Successfully");
 
 })
 
@@ -198,6 +202,7 @@ app.post('/login',async (req,res)=>{
       }
       const token = jwt.sign(data,'secret_ecom');
       res.json({success:true,token});
+      console.log("Login Successfully");
 
     }else{
       res.json({success:false,errors:"Wrong Password"});
@@ -242,6 +247,9 @@ const fetchUser=async(req,res,next)=>{
 //add the product to the cart
 app.post('/addtocart',fetchUser,async(req,res)=>{
   let userData=await Users.findOne({_id:req.user.id});
+  if (!userData || !userData.cartData) {
+    return res.status(404).send("User or cart data not found");
+  }
   userData.cartData[req.body.itemId] +=1;
   await Users.findOneAndUpdate({_id:req.user.id},{cartData:userData.cartData})
   res.send("Added the product to the cart");
@@ -249,9 +257,12 @@ app.post('/addtocart',fetchUser,async(req,res)=>{
 })
 
 //remove the product from the cart
-app.post('/addtocart',fetchUser,async(req,res)=>{
+app.post('/removefromcart',fetchUser,async(req,res)=>{
   console.log("removed",req.body.itemId);
   let userData=await Users.findOne({_id:req.user.id});
+  if (!userData || !userData.cartData) {
+    return res.status(404).send("User or cart data not found");
+  }
   if(userData.cartData[req.body.itemId]>0){
     userData.cartData[req.body.itemId] -=1;
     await Users.findOneAndUpdate({_id:req.user.id},{cartData:userData.cartData})
@@ -275,3 +286,5 @@ app.listen(PORT, (error) => {
     console.log("Error:" + error);
   }
 });
+
+module.exports = app;
