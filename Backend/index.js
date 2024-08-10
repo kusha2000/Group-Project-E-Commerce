@@ -14,7 +14,7 @@ app.use(cors());
 const uri = process.env.MONGODB_URI || "";
 try {
   mongoose.connect(uri);
-  //console.log("Connected to DB");
+  // console.log("Connected to DB");
 } catch (error) {
   console.log(error);
 }
@@ -37,12 +37,17 @@ const upload=multer({storage:storage})
 
 app.use('/images',express.static('upload/images'))
 
-app.post("/upload",upload.single("product"),(req,res)=>{
+app.post("/upload", upload.single("product"), (req, res) => {
+  console.log(req.file); // Log the file to see if it's being processed
+  if (!req.file) {
+    return res.status(400).json({ success: false, errors: "No file uploaded." });
+  }
   res.json({
-    success:1,
-    image_url:`http://localhost:${PORT}/images/${req.file.filename}`
-  })
-})
+    success: 1,
+    image_url: `http://localhost:${PORT}/images/${req.file.filename}`
+  });
+});
+
 
 //Product Schema
 const Product =mongoose.model("Product",{
@@ -121,7 +126,7 @@ app.post('/removeproduct',async (req,res)=>{
 })
 
 //Getting All Products
-app.get('/allproduct',async (req,res)=>{
+app.get('/allproducts',async (req,res)=>{
   let product=await Product.find({});
   console.log("All Products Fetched");
 
@@ -155,7 +160,7 @@ app.post('/signup',async (req,res)=>{
   let check=await Users.findOne({email:req.body.email});
 
   if(check){
-    return res.status(400).json({success:false,message:"existing user found with same email"})
+    return res.status(400).json({success:false,errors:"existing user found with same email"})
   }
   let cart={}
   for (let i = 0; i < 300; i++) {

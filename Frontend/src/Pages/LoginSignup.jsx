@@ -13,16 +13,33 @@ const LoginSignup = () => {
     setFormData({
       ...formData,
       [e.target.name]:e.target.value,
-      password: "",
-      email: "",
     });
   };
 
+  const validateForm = () => {
+    const { username, password, email } = formData;
+
+    if (state === "Sign Up" && !username) {
+      alert("Username is required.");
+      return false;
+    }
+    if (!email) {
+      alert("Email is required.");
+      return false;
+    }
+    if (!password) {
+      alert("Password is required.");
+      return false;
+    }
+    return true;
+  };
+
   const login = async () => {
+    if (!validateForm()) return;
     console.log("Login Function Executed",formData);
     let responseData;
     await fetch("http://localhost:4000/login",{
-      method:'',
+      method:'POST',
       headers:{
         Accept:'application/form-data',
         'Content-Type':'application/json'
@@ -38,10 +55,11 @@ const LoginSignup = () => {
     }
   };
   const signup = async () => {
+    if (!validateForm()) return;
     console.log("Signup Function Executed",formData);
     let responseData;
     await fetch("http://localhost:4000/signup",{
-      method:'',
+      method:'POST',
       headers:{
         Accept:'application/form-data',
         'Content-Type':'application/json'
@@ -57,14 +75,25 @@ const LoginSignup = () => {
     }
   };
 
+  const handleStateChange = (newState) => {
+    setState(newState);
+    setFormData({
+      username: "",
+      password: "",
+      email: "",
+    });
+  };
+
+  
+
   return (
     <div>
       <div className="loginsignup">
         <div className="loginsignup-container">
           <h1>{state}</h1>
           <div className="loginsignup-fields">
-            {state === "Sign up" ? (
-              <input type="text" name="username" value={formData.username} onChange={changeHandler} placeholder="Your Name" />
+            {state === "Sign Up" ? (
+              <input type="text" name="username" value={formData.username} onChange={changeHandler} placeholder="Your Name"  />
             ) : (
               <></>
             )}
@@ -83,7 +112,8 @@ const LoginSignup = () => {
               Already have an account?{" "}
               <span
                 onClick={() => {
-                  setState("Login");
+                  handleStateChange("Login");
+                  //setState("");
                 }}
               >
                 Login here
@@ -94,17 +124,15 @@ const LoginSignup = () => {
               Create an account?{" "}
               <span
                 onClick={() => {
-                  setState("Sign Up");
+                  handleStateChange("Sign Up");
+                  //setState("Sign Up");
                 }}
               >
                 Click here
               </span>
             </p>
           )}
-          <div className="loginsignup-agree">
-            <input type="checkbox" name="" id="" />
-            <p>By continuing, i agree to the terms of use & privacy policy.</p>
-          </div>
+
         </div>
       </div>
     </div>
