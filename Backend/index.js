@@ -1,4 +1,4 @@
-const PORT = process.env.PORT ;
+const PORT = process.env.PORT | 4000;
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
@@ -280,7 +280,7 @@ app.post('/getcart',fetchUser,async (req,res)=>{
 
 app.listen(PORT, (error) => {
   if (!error) {
-    console.log("Server is running on Port" + PORT);
+    console.log("Server is running on Port:" + PORT);
     console.log("Connect to DB");
   } else {
     console.log("Error:" + error);
