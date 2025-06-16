@@ -35,8 +35,7 @@ This project was developed for the SE5102: Software Testing course module at Sab
 
 <h2>This is the Full Demo of the project</h2><br><br>
 
-![Demo](https://github.com/user-attachments/assets/17c92da3-aa8f-4109-8837-8bc218527f00)
-
+https://github.com/user-attachments/assets/475cb852-c037-4d58-b1d0-2fe40679f9ac
 
 <h2>This is the screenshots of the system</h2><br><br>
 
